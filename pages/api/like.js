@@ -1,6 +1,6 @@
 import {initMongoose} from "../../lib/mongoose";
 import {authOptions} from "./auth/[...nextauth]";
-import {unstable_getServerSession} from "next-auth";
+import {getServerSession} from "next-auth";
 import Like from "../../models/Like";
 import Post from "../../models/Post";
 
@@ -12,7 +12,7 @@ async function updateLikesCount(postId) {
 
 export default async function handle(req, res) {
   await initMongoose();
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   const postId = req.body.id;
   const userId = session.user.id;

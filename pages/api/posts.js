@@ -1,13 +1,13 @@
 import {initMongoose} from "../../lib/mongoose";
 import Post from "../../models/Post";
-import {unstable_getServerSession} from "next-auth";
+import {getServerSession} from "next-auth";
 import {authOptions} from "./auth/[...nextauth]";
 import Like from "../../models/Like";
 import Follower from "../../models/Follower";
 
 export default async function handler(req, res) {
   await initMongoose();
-  const session = await unstable_getServerSession(req,res,authOptions);
+  const session = await getServerSession(req,res,authOptions);
 
   if (req.method === 'GET') {
     const {id} = req.query;

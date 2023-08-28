@@ -1,17 +1,19 @@
 import mongoose from "mongoose";
 import {initMongoose} from "../../lib/mongoose";
 import User from "../../models/User";
-import {unstable_getServerSession} from "next-auth";
+import {getServerSession} from "next-auth";
 import {authOptions} from "./auth/[...nextauth]";
 import Follower from "../../models/Follower";
 
 export default async function handle(req, res) {
   await initMongoose();
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
+
+  console.log(session.user)
 
   if (req.method === 'PUT') {
     const {username} = req.body;
-    await User.findByIdAndUpdate(session.user.id, {username});
+    await User.findByIdAndUpdate(session.user._id, {username});
     res.json('ok');
   }
   if (req.method === 'GET') {
@@ -20,7 +22,7 @@ export default async function handle(req, res) {
       ? await User.findById(id)
       : await User.findOne({username});
     const follow = await Follower.findOne({
-      source:session.user.id,
+      source:session.user._id,
       destination:user._id
     });
     res.json({user,follow});
